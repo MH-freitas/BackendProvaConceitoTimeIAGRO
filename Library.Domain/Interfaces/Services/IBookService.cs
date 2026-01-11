@@ -12,6 +12,8 @@ namespace Library.Domain.Intefaces.Services
     {
         Task<IReadOnlyList<Book>?> GetAllBooksAsync(BookFilterDto filter);
         List<PrecifiedBookView>? Precifier(PrecifierBooksDto ids);
+
+        PrecifiedBookView? PrecifierOneBook(int id);
     }
 }
 

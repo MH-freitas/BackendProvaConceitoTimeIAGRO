@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Library.Shared.Enums;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
@@ -10,10 +11,11 @@ namespace Librery.Shared.Dtos
      int? Id,
      string? Name,
      double? Price,
-     DateTime OriginallyPublished,
+     string? OriginallyPublished,
      string? Author,
      int? PagesCount,
-     string? Ilustrator,
-     string[]? Genres
+     string? Illustrator,
+     string? Genre,
+     EOrder? OrderBy
     );
 }

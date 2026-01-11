@@ -37,5 +37,18 @@ namespace Library.App.Controllers
             }
             return Ok(precifiedBooks);
         }
+
+        [HttpPost("precify/{id:int}")]
+        public IActionResult GetPrecifiedBook(int id)
+        {
+            var result = _bookService.PrecifierOneBook(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+
     }
 }

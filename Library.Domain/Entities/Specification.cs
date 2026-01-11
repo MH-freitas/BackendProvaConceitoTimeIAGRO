@@ -9,8 +9,8 @@ namespace Library.Domain.Entities
         public string? OriginallyPublished { get; set; }
         [JsonPropertyName("Author")]
         public string? Author { get; set; }
-        [JsonPropertyName("Pages count")]
-        public int PagesCount { get; set; }
+        [JsonPropertyName("Page count")]
+        public int PageCount { get; set; }
         [JsonPropertyName("Illustrator")]
         [JsonConverter(typeof(StringOrArrayConverter))]
         public List<string> Illustrator { get; set; } = [];
