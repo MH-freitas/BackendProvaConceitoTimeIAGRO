@@ -17,5 +17,10 @@ namespace Library.Domain.Entities
         [JsonPropertyName("Genres")]
         [JsonConverter(typeof(StringOrArrayConverter))]
         public List<string> Genres { get; set; } = [];
+
+        public Specification()
+        {
+            
+        }
     }
 }

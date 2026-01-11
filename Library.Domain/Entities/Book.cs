@@ -15,5 +15,10 @@ namespace Library.Domain.Entities
         public double Price { get; set; }
         [JsonPropertyName("specifications")]
         public Specification Specification { get; set; } = new Specification();
+
+        public Book()
+        {
+            
+        }
     }
 }
