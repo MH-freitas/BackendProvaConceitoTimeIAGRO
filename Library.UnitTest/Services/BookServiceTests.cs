@@ -1,11 +1,13 @@
 ﻿using Library.Domain.Intefaces.Services;
 using Library.Domain.Services;
+using Library.Shared.Dtos;
 using Library.Shared.Enums;
 using Library.UnitTest.Factories;
 using Librery.Shared.Dtos;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace Library.UnitTest.Services
@@ -20,7 +22,7 @@ namespace Library.UnitTest.Services
         }
 
         [Fact]
-        public async Task Test_GetAllBooks_ReturnsAllBooks()
+        public async Task GetAllBooksReturnsAllBooks()
         {
             var bookFilter = new BookFilterDto(null, null, null, null, null, null, null, null, null);
 
@@ -31,7 +33,7 @@ namespace Library.UnitTest.Services
         }
 
         [Fact]
-        public async Task Test_GetAllBooks_FilterById_ReturnsCorrectBook()
+        public async Task GetAllBooksFilterByIdReturnsCorrectBook()
         {
             var bookFilter = new BookFilterDto(null, null, null, null, null, null, null, null, EOrder.Ascending);
 
@@ -44,7 +46,7 @@ namespace Library.UnitTest.Services
 
         [Theory]
         [MemberData(nameof(GetBookFilterData))]
-        public async Task Test_GetAllBooks_ReturnsBooksWithCorrespondentFilter(BookFilterDto bookFilter)
+        public async Task GetAllBooksReturnsBooksWithCorrespondentFilter(BookFilterDto bookFilter)
         {
             var books = await _bookService.GetAllBooksAsync(bookFilter);
 
@@ -78,6 +80,29 @@ namespace Library.UnitTest.Services
                 if (!string.IsNullOrEmpty(bookFilter.Genre))
                     Assert.Contains(bookFilter.Genre, book.Specification.Genres!);
             });
+        }
+
+        [Fact]
+        public void ShouldBePossiblePrecifyListOfBooks() 
+        {
+            var books = _bookRepositoryMock.Object.GetAllBooks();
+
+            var precifiedBooksForVerification = books!
+                .Select(b => new 
+                { b.Id, Price = Math.Round((b.Price * 1.2), 2) })
+                .ToList();
+
+            var booksId = new PrecifierBooksDto([.. books!.Select(b => b.Id)]);
+
+            var precifiedBooks = _bookService.Precifier(booksId);
+            
+            foreach(var precifiedBook in precifiedBooksForVerification)
+            {
+                Assert.NotNull(books);
+                Assert.Equal(
+                    precifiedBooksForVerification[precifiedBook.Id - 1].Price, 
+                    precifiedBooks![precifiedBook.Id - 1].PriceWithShipping);
+            }
         }
     }
 }
