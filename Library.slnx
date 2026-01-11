@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Library.App/Library.App.csproj" />
+  <Project Path="Library.Domain/Library.Domain.csproj" />
+  <Project Path="Library.Infra/Library.Infra.csproj" />
+  <Project Path="Library.Shared/Library.Shared.csproj" />
+  <Project Path="Library.UnitTest/Library.UnitTest.csproj" />
+</Solution>
