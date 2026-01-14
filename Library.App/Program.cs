@@ -7,6 +7,8 @@ builder.Services.AddControllers();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddConfigureServices();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

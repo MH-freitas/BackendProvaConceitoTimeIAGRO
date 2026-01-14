@@ -1,12 +1,16 @@
-﻿using Library.Domain.Intefaces.Services;
+﻿using Library.Domain.Entities;
+using Library.Domain.Intefaces.Repositories;
+using Library.Domain.Intefaces.Services;
 using Library.Domain.Services;
 using Library.Shared.Dtos;
 using Library.Shared.Enums;
+using Library.Shared.Views;
 using Library.UnitTest.Factories;
 using Librery.Shared.Dtos;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
@@ -57,52 +61,73 @@ namespace Library.UnitTest.Services
                     Assert.Equal(bookFilter.Id.Value, book.Id);
 
                 if (!string.IsNullOrEmpty(bookFilter.Name))
-                    Assert.Contains(bookFilter.Name, book.Name, 
+                    Assert.Contains(bookFilter.Name, book.Name,
                         StringComparison.OrdinalIgnoreCase);
-                
+
                 if (bookFilter.Price.HasValue)
                     Assert.Equal(bookFilter.Price.Value, book.Price);
-                
+
                 if (!string.IsNullOrEmpty(bookFilter.OriginallyPublished))
-                    Assert.Contains(bookFilter.OriginallyPublished, 
+                    Assert.Contains(bookFilter.OriginallyPublished,
                         book.Specification.OriginallyPublished, StringComparison.OrdinalIgnoreCase);
-                
+
                 if (!string.IsNullOrEmpty(bookFilter.Author))
-                    Assert.Contains(bookFilter.Author, book.Specification.Author, 
+                    Assert.Contains(bookFilter.Author, book.Specification.Author,
                         StringComparison.OrdinalIgnoreCase);
-                
+
                 if (bookFilter.PagesCount.HasValue)
                     Assert.Equal(bookFilter.PagesCount.Value, book.Specification.PageCount);
-                
+
                 if (!string.IsNullOrEmpty(bookFilter.Illustrator))
                     Assert.Contains(bookFilter.Illustrator, book!.Specification!.Illustrator!);
-                
+
                 if (!string.IsNullOrEmpty(bookFilter.Genre))
                     Assert.Contains(bookFilter.Genre, book.Specification.Genres!);
             });
         }
 
         [Fact]
-        public void ShouldBePossiblePrecifyListOfBooks() 
+        public void ShouldBePossiblePrecifyListOfBooks()
         {
             var books = _bookRepositoryMock.Object.GetAllBooks();
 
             var precifiedBooksForVerification = books!
-                .Select(b => new 
+                .Select(b => new
                 { b.Id, Price = Math.Round((b.Price * 1.2), 2) })
                 .ToList();
 
             var booksId = new PrecifierBooksDto([.. books!.Select(b => b.Id)]);
 
             var precifiedBooks = _bookService.Precifier(booksId);
-            
-            foreach(var precifiedBook in precifiedBooksForVerification)
+
+            foreach (var precifiedBook in precifiedBooksForVerification)
             {
                 Assert.NotNull(books);
                 Assert.Equal(
-                    precifiedBooksForVerification[precifiedBook.Id - 1].Price, 
+                    precifiedBooksForVerification[precifiedBook.Id - 1].Price,
                     precifiedBooks![precifiedBook.Id - 1].PriceWithShipping);
             }
+        }
+
+        [Fact]
+
+        public void ShouldBePossiblePrecifyABook()
+        {
+            var book = _bookService.PrecifierOneBook(1);
+
+            if (book == null)
+            {     Assert.Null(book);
+                return;
+            }
+
+            var calculatedShip = Math.Round(book.Price * 1.2, 2);
+
+            var bookView = new PrecifiedBookView(
+                book.Id,
+                book.Name,
+                book.Price,
+                calculatedShip
+            );
         }
     }
 }
